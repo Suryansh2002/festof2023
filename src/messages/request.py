@@ -1,5 +1,6 @@
 from enum import StrEnum
 
+from pydantic import Field
 from uagents import Model
 
 
@@ -14,4 +15,4 @@ class TemperatureRequest(Model):
     location: str
     minimum_temperature: int
     maximum_temperature: int
-    sends_to: list[SendsTo]
+    sends_to: list[SendsTo] = Field(default=[SendsTo.AGENT])

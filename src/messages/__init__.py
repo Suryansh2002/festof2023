@@ -1,2 +1,2 @@
-from .general import KeyValue, UAgentResponse, UAgentResponseType
+from .general import UAgentResponse, UAgentResponseType
 from .request import SendsTo, TemperatureRequest

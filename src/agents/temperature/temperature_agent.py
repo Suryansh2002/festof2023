@@ -7,7 +7,8 @@ import aiohttp
 from uagents import Agent
 from uagents.setup import fund_agent_if_low
 
-from messages import SendsTo, TemperatureRequest, UAgentResponse, UAgentResponseType
+from messages import (SendsTo, TemperatureRequest, UAgentResponse,
+                      UAgentResponseType)
 from utils.cooldown import Cooldown
 from utils.database import Database
 from utils.email import send_email, send_verifaction, verify_regex
@@ -39,7 +40,7 @@ async def shutdown(ctx: Context):
     await request_handler.stop()
 
 
-@temperate_agent.on_interval(period=5)
+@temperate_agent.on_interval(period=10 * 60)
 async def scan_all(ctx: Context):
     async for data in database.find_all():
         if alert_cooldown.on_waiting(data.address):
@@ -67,29 +68,23 @@ async def scan_all(ctx: Context):
             except Exception as e:
                 ctx.logger.warn(str(e))
         if SendsTo.AGENT in data.sends_to:
-            try:
-                await ctx.send(
-                    data.address,
-                    UAgentResponse(type=UAgentResponseType.MESSAGE, message=body),
-                )
-            except aiohttp.ClientConnectionError:
-                pass
+            await ctx.send(
+                data.address,
+                UAgentResponse(type=UAgentResponseType.MESSAGE, message=body),
+            )
         alert_cooldown.update(data.address)
 
 
 @temperate_agent.on_message(model=TemperatureRequest, replies=UAgentResponse)
 async def add_user(ctx: Context, sender: str, message: TemperatureRequest):
     if update_cooldown.on_waiting(sender):
-        try:
-            await ctx.send(
-                sender,
-                UAgentResponse(
-                    type=UAgentResponseType.ERROR,
-                    message="You are on cooldown, try again in 5 minutes !",
-                ),
-            )
-        except aiohttp.ClientConnectionError:
-            return
+        await ctx.send(
+            sender,
+            UAgentResponse(
+                type=UAgentResponseType.ERROR,
+                message="You are on cooldown, try again in 5 minutes !",
+            ),
+        )
         return
     update_cooldown.update(sender)
 
@@ -101,13 +96,10 @@ async def add_user(ctx: Context, sender: str, message: TemperatureRequest):
         await send_verifaction(message.email)
     except Exception as e:
         ctx.logger.warn(str(e))
-        try:
-            await ctx.send(
-                sender, UAgentResponse(type=UAgentResponseType.ERROR, message=str(e))
-            )
-            return
-        except aiohttp.ClientConnectionError:
-            return
+        await ctx.send(
+            sender, UAgentResponse(type=UAgentResponseType.ERROR, message=str(e))
+        )
+        return
 
     await database.insert(
         address=sender,
@@ -120,16 +112,13 @@ async def add_user(ctx: Context, sender: str, message: TemperatureRequest):
         sends_to=message.sends_to,
     )
 
-    try:
-        await ctx.send(
-            sender,
-            UAgentResponse(
-                type=UAgentResponseType.MESSAGE,
-                message="Location added successfully for updates !",
-            ),
-        )
-    except aiohttp.ClientConnectionError:
-        return
+    await ctx.send(
+        sender,
+        UAgentResponse(
+            type=UAgentResponseType.MESSAGE,
+            message="Location added successfully for updates !",
+        ),
+    )
 
 
 @temperate_agent.on_message(model=UAgentResponse)
@@ -137,16 +126,14 @@ async def remove_user(ctx: Context, sender: str, message: UAgentResponse):
     if message.message != "remove":
         return
     if update_cooldown.on_waiting(sender):
-        try:
-            await ctx.send(
-                sender,
-                UAgentResponse(
-                    type=UAgentResponseType.ERROR,
-                    message="You are on cooldown, try again in 5 minutes !",
-                ),
-            )
-        except aiohttp.ClientConnectionError:
-            return
+        await ctx.send(
+            sender,
+            UAgentResponse(
+                type=UAgentResponseType.ERROR,
+                message="You are on cooldown, try again in 5 minutes !",
+            ),
+        )
+        return
     update_cooldown.update(sender)
     ctx.logger.info(f"Removing user {sender} !")
     await database.remove(sender)
