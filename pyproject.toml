@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "uagentproject"
+version = "0.1.0"
+description = ""
+authors = ["Suryansh2002 <suryanshwins2002@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+uagents = "^0.6.2"
+python-dotenv = "^1.0.0"
+odmantic = "^0.9.2"
+motor-types = "^1.0.0b3"
+aiosmtplib = "^2.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
