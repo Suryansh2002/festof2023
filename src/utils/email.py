@@ -39,6 +39,9 @@ async def send_verifaction(email: str):
     Returns:
         None
 
+    Raises:
+        Exception: Unable to send verification email
+
     """
     try:
         await send_email(

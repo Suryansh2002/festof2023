@@ -12,16 +12,6 @@ class Cooldown:
     """
 
     def __init__(self, per: int) -> None:
-        """
-        The constructor for Cooldown class.
-
-        Args:
-            per (int): Cooldown period
-
-        Returns:
-            None
-
-        """
         self.per = per
         self._cooldown: dict[str, float] = {}
 
@@ -36,7 +26,7 @@ class Cooldown:
             bool: True if key is on cooldown, False otherwise
 
         """
-        current = time.time()
+        current = time.time()  # get current time in seconds since epoch
         if current - self._cooldown.get(key, 0) < self.per:
             return True
         return False

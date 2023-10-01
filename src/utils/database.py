@@ -59,13 +59,6 @@ class Database:
     """
 
     def __init__(self) -> None:
-        """
-        The constructor for Database class.
-
-        Returns:
-            None
-
-        """
         self._started = False
 
     async def connect(self):

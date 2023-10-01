@@ -16,16 +16,11 @@ class RequestHandler:
     Attributes:
         _session (Optional[aiohttp.ClientSession]): aiohttp.ClientSession object
 
+    Properties:
+        session (aiohttp.ClientSession): aiohttp.ClientSession object
     """
 
     def __init__(self) -> None:
-        """
-        The constructor for RequestHandler class.
-
-        Returns:
-            None
-
-        """
         self._session: Optional[aiohttp.ClientSession] = None
         # initialize session to None
 
