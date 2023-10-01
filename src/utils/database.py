@@ -9,11 +9,11 @@ import os
 from typing import Optional
 
 from motor.motor_asyncio import AsyncIOMotorClient  # motor is an async mongodb driver
-from odmantic.engine import (
-    AIOEngine,
-)  # odmantic is a ODM (object document mapper) for pymongo,motor
+from odmantic.engine import AIOEngine
 from odmantic.field import Field
 from odmantic.model import Model
+
+# odmantic is a ODM (object document mapper) for pymongo,motor
 
 from messages import SendsTo
 
@@ -155,6 +155,5 @@ class Database:
 
         """
         await self.connect()  # connect to the database
-        await self.engine.database[Data.__collection__].delete_one(
-            {"_id": address}
-        )  # remove user from database
+        await self.engine.database[Data.__collection__].delete_one({"_id": address})
+        # remove user from database

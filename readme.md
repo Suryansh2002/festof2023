@@ -1,6 +1,6 @@
 # Temperature Alert Agent
 
-**This project was in IIT Bombay's Techfest Competiotion [HackAI]() Zonals.**
+**This project was sent for IIT Bombay's Techfest Competition [HackAI](https://techfest.org/competitions/hack-aI) Zonals.**
 
 ## Project Details
 
@@ -82,11 +82,11 @@
 
 - Replace `<sendor_email_password>` with password for the that gmail account to help authenticate the account
 
+  If you don't know how to generate app passwords for your google account refer to this [link](https://support.google.com/accounts/answer/185833?hl=en#zippy=)
+
 - Replce `<your_seed_here>` with a name of choice.
 
   Example - `TEMPERATURE_SEED="temperature"`
-
-  If you don't know how to generate app passwords for your google account refer to this [link](https://support.google.com/accounts/answer/185833?hl=en#zippy=)
 
 - Replace the `<your_connection_string>` with your mongodb connection string you generated in the last point
 
@@ -144,7 +144,7 @@ async def send_temperature_request(ctx: Context):
             sends_to=[SendsTo.AGENT],
         ),
     )"""
-    # sending email is not needed if sends_to list doesn't have SendsTo.EMAIL
+    # passing email is not needed if sends_to list doesn't have SendsTo.EMAIL
     await ctx.send(
         "<temperaure_agent_address>",
         TemperatureRequest(

@@ -107,16 +107,14 @@ async def scan_all(ctx: Context):
             continue
 
         # send alerts
-        if (
-            SendsTo.EMAIL in data.sends_to
-        ) and data.email:  # check if user wants to receive email alerts
+        if (SendsTo.EMAIL in data.sends_to) and data.email:
+            # check if user wants to receive email alerts
             try:
                 await send_email(data.email, "TEMPERATURE ALERT !", body)
             except Exception as e:
                 ctx.logger.error(str(e))
-        if (
-            SendsTo.AGENT in data.sends_to
-        ):  # check if user wants to receive agent alerts
+        if SendsTo.AGENT in data.sends_to:
+            # check if user wants to receive agent alerts
             await ctx.send(
                 data.address,
                 TemperatureWarn(

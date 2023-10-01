@@ -10,7 +10,5 @@ from agents import temperate_agent
 if __name__ == "__main__":
     bureau = Bureau(endpoint=["http://localhost:8000/submit"], port=8000)
     bureau.add(temperate_agent)
-    print(
-        "Address for temperature Agent: ", temperate_agent.address
-    )  # print address of agent
+    print("Address for temperature Agent: ", temperate_agent.address)
     bureau.run()
