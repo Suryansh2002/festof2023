@@ -125,7 +125,7 @@ async def scan_all(ctx: Context):
                     condition=condition,
                     minimum_temperature=data.minimum_temperature,
                     maximum_temperature=data.maximum_temperature,
-                ),
+                ),  # send TemperatureWarn message to user
             )
         alert_cooldown.update(data.address)  # update cooldown
 

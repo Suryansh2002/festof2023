@@ -68,7 +68,7 @@
 
   ```
   WEATHER_API_KEY="<your_api_key_here>"
-  TEMPERATURE_SEED="temperature"
+  TEMPERATURE_SEED="<your_seed_here>"
 
   EMAIL_SENDER = "<email_of_sendor>"
   EMAIL_PASSWORD = "<sendor_email_password>"
@@ -82,6 +82,10 @@
 
 - Replace `<sendor_email_password>` with password for the that gmail account to help authenticate the account
 
+- Replce `<your_seed_here>` with a name of choice.
+
+  Example - `TEMPERATURE_SEED="temperature"`
+
   If you don't know how to generate app passwords for your google account refer to this [link](https://support.google.com/accounts/answer/185833?hl=en#zippy=)
 
 - Replace the `<your_connection_string>` with your mongodb connection string you generated in the last point
@@ -91,6 +95,8 @@
 ```
 py src/main.py
 ```
+
+Copy the Temperature agent address printed in the console.We are going to need it in step 7.
 
 ### 7.Set up the client script
 
@@ -105,7 +111,14 @@ import os
 from uagents import Agent, Context
 from uagents.setup import fund_agent_if_low
 
-from src.messages import SendsTo, TemperatureRequest, UAgentResponse, UAgentResponseType
+from src.messages import (
+    SendsTo,
+    TemperatureCondition,
+    TemperatureRequest,
+    TemperatureWarn,
+    UAgentResponse,
+    UAgentResponseType,
+)
 
 MAIN_AGENT_SEED = os.getenv("MAIN_AGENT_SEED")
 
@@ -123,7 +136,7 @@ fund_agent_if_low(str(main_agent.wallet.address()))
 @main_agent.on_interval(period=5)
 async def send_temperature_request(ctx: Context):
     """await ctx.send(
-        "agent1qfe0vshvrd8jl0xj70da578puz3duut5l0rffp8am9nyq472fwjwv3nj3zg",  # Address of the temperature agent
+        "<temperaure_agent_address>",  # Address of the temperature agent
         TemperatureRequest(
             location="lucknow",
             minimum_temperature=20,
@@ -131,9 +144,9 @@ async def send_temperature_request(ctx: Context):
             sends_to=[SendsTo.AGENT],
         ),
     )"""
-    #sending email is not needed if sends_to list doesn't have SendsTo.EMAIL
+    # sending email is not needed if sends_to list doesn't have SendsTo.EMAIL
     await ctx.send(
-        "agent1qfe0vshvrd8jl0xj70da578puz3duut5l0rffp8am9nyq472fwjwv3nj3zg",
+        "<temperaure_agent_address>",
         TemperatureRequest(
             location="lucknow",
             email="yourmail@gmail.com",
@@ -153,16 +166,46 @@ async def receive_update(ctx: Context, _: str, message: UAgentResponse):
         ctx.logger.error(str(message.message))
 
 
+@main_agent.on_message(model=TemperatureWarn)
+async def receive_warning(ctx: Context, _: str, message: TemperatureWarn):
+    # Client can do anything with the data received
+
+    thershold = {
+        TemperatureCondition.LOW: message.minimum_temperature,
+        TemperatureCondition.HIGH: message.maximum_temperature,
+    }
+    ctx.logger.info(
+        f"Temperature at {message.location} is {message.temperature}\n"
+        f"{message.condition.value.title()}er than the set threshold of {thershold[message.condition]}!"
+    )
+
+
 if __name__ == "__main__":
     main_agent.run()
 ```
 
-This Script will send Temperature Request to =
-location="lucknow",
-minimum_temperature=20,
-maximum_temperature=25.
+This Script will send Temperature Request to the data listed below.
 
-You can edit these fields in the above code as per your choice
+Make sure to replace the `yourmail@gmail.com` to receive alert mails.
+
+Replace the `<temperaure_agent_address>` with the address copied in step 6.
+
+You can edit other fields as per your choice fields in the above code.
+
+This snippet is the part of the above code to help demonstrate better.
+
+```py
+    await ctx.send(
+        "<temperaure_agent_address>",
+        TemperatureRequest(
+            location="lucknow",
+            email="yourmail@gmail.com",
+            minimum_temperature=20,
+            maximum_temperature=25,
+            sends_to=[SendsTo.EMAIL, SendsTo.AGENT],
+        ),
+    )
+```
 
 ### 8.Run the client script
 
