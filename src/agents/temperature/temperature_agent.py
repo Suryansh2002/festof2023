@@ -6,7 +6,14 @@ from typing import TYPE_CHECKING
 from uagents import Agent
 from uagents.setup import fund_agent_if_low
 
-from messages import SendsTo, TemperatureRequest, UAgentResponse, UAgentResponseType
+from messages import (
+    SendsTo,
+    TemperatureCondition,
+    TemperatureRequest,
+    TemperatureWarn,
+    UAgentResponse,
+    UAgentResponseType,
+)
 from utils.cooldown import Cooldown
 from utils.database import Database
 from utils.email import send_email, send_verifaction, verify_regex
@@ -34,7 +41,7 @@ alert_cooldown = Cooldown(3 * 60 * 60)
 async def startup(ctx: Context):
     """
     This function is called when the agent starts up.
-    It is used to start the database connection and request handler.
+    It is used to start the request handler.
 
     Args:
         ctx (Context): Context object
@@ -50,7 +57,7 @@ async def startup(ctx: Context):
 async def shutdown(ctx: Context):
     """
     This function is called when the agent shuts down.
-    It is used to stop the database connection and request handler.
+    It is used to stop the request handler.
 
     Args:
         ctx (Context): Context object
@@ -88,12 +95,14 @@ async def scan_all(ctx: Context):
                 f"Temperature lower than the set minimum threshold of {data.minimum_temperature} Celsius\n"
                 f"Location: {data.location.title()}\n"
             )
+            condition = TemperatureCondition.LOW
         elif temperature > data.maximum_temperature:
             body = (
                 f"Current Temperature: {temperature}\n"
                 f"Temperature lower than the set maximum threshold of {data.maximum_temperature} Celsius\n"
                 f"Location: {data.location.title()}\n"
             )
+            condition = TemperatureCondition.HIGH
         else:
             continue
 
@@ -110,7 +119,13 @@ async def scan_all(ctx: Context):
         ):  # check if user wants to receive agent alerts
             await ctx.send(
                 data.address,
-                UAgentResponse(type=UAgentResponseType.MESSAGE, message=body),
+                TemperatureWarn(
+                    location=data.location,
+                    temperature=temperature,
+                    condition=condition,
+                    minimum_temperature=data.minimum_temperature,
+                    maximum_temperature=data.maximum_temperature,
+                ),
             )
         alert_cooldown.update(data.address)  # update cooldown
 
@@ -146,15 +161,13 @@ async def add_user(ctx: Context, sender: str, message: TemperatureRequest):
 
     try:  # fetch lat and lon from openweathermap api
         lat, lon = await request_handler.fetch_lat_and_lon(message.location)
-        if (
-            SendsTo.EMAIL in message.sends_to
-        ):  # check if user wants to receive email alerts
+        # check if user wants to receive email alerts
+        if SendsTo.EMAIL in message.sends_to:
             if message.email is None:  # check if email is provided
                 raise Exception("Email is required for email alerts !")
 
             verify_regex(message.email)  # check if email has viable regex
             await send_verifaction(message.email)
-
     except Exception as e:  # catch exception if any error occurs
         ctx.logger.error(str(e))
         await ctx.send(
@@ -162,7 +175,6 @@ async def add_user(ctx: Context, sender: str, message: TemperatureRequest):
         )
         return
 
-    # add user to database
     await database.insert(
         address=sender,
         email=message.email,
@@ -174,7 +186,6 @@ async def add_user(ctx: Context, sender: str, message: TemperatureRequest):
         sends_to=message.sends_to,
     )
 
-    # send success message
     await ctx.send(
         sender,
         UAgentResponse(
@@ -214,11 +225,11 @@ async def remove_user(ctx: Context, sender: str, message: UAgentResponse):
         return
     update_cooldown.update(sender)
     ctx.logger.info(f"Removing user {sender} !")
-    await database.remove(sender)  # remove user from database
+    await database.remove(sender)
     await ctx.send(
         sender,
         UAgentResponse(
             type=UAgentResponseType.MESSAGE,
             message="Temperature updates removed successfully !",
         ),
-    )  # send success message
+    )

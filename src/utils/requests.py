@@ -26,9 +26,8 @@ class RequestHandler:
             None
 
         """
-        self._session: Optional[
-            aiohttp.ClientSession
-        ] = None  # initialize session to None
+        self._session: Optional[aiohttp.ClientSession] = None
+        # initialize session to None
 
     async def start(self):
         """
