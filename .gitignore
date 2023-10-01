@@ -2,4 +2,4 @@
 .venv
 __pycache__/
 private_keys.json
-test.py
+client.py

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -8,7 +6,7 @@ from uagents import Bureau
 
 from agents import temperate_agent
 
-print(temperate_agent.address)
+print(temperate_agent.address)  # print address of agent
 
 
 # initialize bureau

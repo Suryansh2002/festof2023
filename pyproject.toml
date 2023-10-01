@@ -2,7 +2,7 @@
 name = "uagentproject"
 version = "0.1.0"
 description = ""
-authors = ["Suryansh2002 <suryanshwins2002@gmail.com>"]
+authors = ["Suryansh2002 <suryanshwins2002@gmail.com>","amaan8429 <mohdamaan8429@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
