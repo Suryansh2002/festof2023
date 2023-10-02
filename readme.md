@@ -100,7 +100,9 @@ Copy the Temperature agent address printed in the console.We are going to need i
 
 ### 7.Set up the client script
 
-Now that we have set up the integrations, let’s run a client script. To do this, create a new Python file in the project folder called `client.py`, and paste the following:
+Now that we have set up the integrations, we need to set up the client script to communicate with our temperature agent. 
+
+To do this, create a new Python file in the project folder called `client.py`, and paste the following:
 
 ```py
 from dotenv import load_dotenv

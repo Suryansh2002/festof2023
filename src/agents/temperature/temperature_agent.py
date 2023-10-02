@@ -24,7 +24,7 @@ if TYPE_CHECKING:  # to avoid useless imports
 
 TEMPERATURE_SEED = os.getenv("TEMPERATURE_SEED")  # get seed from .env file
 
-temperate_agent = Agent(name="temperature", seed=TEMPERATURE_SEED)  # create agent
+temperate_agent = Agent(name="temperature", seed=TEMPERATURE_SEED)
 fund_agent_if_low(str(temperate_agent.wallet.address()))
 
 
@@ -82,7 +82,7 @@ async def scan_all(ctx: Context):
         None
     """
     async for data in database.find_all():  # fetch all users from database
-        if alert_cooldown.on_waiting(data.address):  # check if user is on cooldown
+        if alert_cooldown.on_waiting(data.address):
             continue  # if user is on cooldown, skip this user
 
         # fetch temperature from openweathermap api
@@ -106,7 +106,7 @@ async def scan_all(ctx: Context):
         else:
             continue
 
-        # send alerts
+        
         if (SendsTo.EMAIL in data.sends_to) and data.email:
             # check if user wants to receive email alerts
             try:
@@ -166,7 +166,7 @@ async def add_user(ctx: Context, sender: str, message: TemperatureRequest):
 
             verify_regex(message.email)  # check if email has viable regex
             await send_verifaction(message.email)
-    except Exception as e:  # catch exception if any error occurs
+    except Exception as e:
         ctx.logger.error(str(e))
         await ctx.send(
             sender, UAgentResponse(type=UAgentResponseType.ERROR, message=str(e))
