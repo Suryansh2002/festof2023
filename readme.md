@@ -15,7 +15,7 @@
 
 ## Setting up the Project
 
-### 1. Prerequisites
+### Step 1. Prerequisites
 
 - Make sure you have python installed in your system by running `python --version` on your terminal
 
@@ -24,7 +24,7 @@
   pip install poetry
   ```
 
-### 2. Cloning the Project
+### Step 2. Cloning the Project
 
 - Run the command on your terminal `git clone <repository_url>`
 
@@ -32,7 +32,7 @@
 
 - Now navigate to the Project Directory by running `cd project_directory`
 
-### 3. Creating a Virtual environment
+### Step 3. Creating a Virtual environment
 
 - Inside the project directory, your should create a virtual environment using Poetry:
 
@@ -42,7 +42,13 @@
 
   This command reads the project's pyproject.toml file and sets up a virtual environment with the required dependencies.
 
-### 4. Generating a MongoDb connection String to use in the .env file (Mentioned in the next point)
+- Now activate the poetry shell using the following command.
+
+  ```
+  poetry shell
+  ```
+
+### Step 4. Generating a MongoDb connection String to use in the .env file (Mentioned in the next point)
 
 - Go to [MongoDb](https://www.mongodb.com/) and create a new account. Answer the basic questions and click on finish
 
@@ -60,7 +66,7 @@
 
 - Copy your connection string and Replace `<password>` with the password for the your account made in one of the above steps.
 
-### 5. Setting up the .env file
+### Step 5. Setting up the .env file
 
 - Create an account on [OpenWeatherMap](https://openweathermap.org/) and get an Api Key
 
@@ -84,13 +90,13 @@
 
   If you don't know how to generate app passwords for your google account refer to this [link](https://support.google.com/accounts/answer/185833?hl=en#zippy=)
 
-- Replce `<your_seed_here>` with a name of choice.
+- Replace `<your_seed_here>` with a name of choice.
 
   Example - `TEMPERATURE_SEED="temperature"`
 
 - Replace the `<your_connection_string>` with your mongodb connection string you generated in the last point
 
-### 6.Run the main script
+### Step 6. Run the main script
 
 ```
 py src/main.py
@@ -98,7 +104,7 @@ py src/main.py
 
 Copy the Temperature agent address printed in the console.We are going to need it in step 7.
 
-### 7.Set up the client script
+### Step 7.Set up the client script
 
 Now that we have set up the integrations, we need to set up the client script to communicate with our temperature agent. 
 
@@ -209,7 +215,7 @@ This snippet is the part of the above code to help demonstrate better.
     )
 ```
 
-### 8.Run the client script
+### Step 8.Run the client script
 
 ```sh
 py client.py
