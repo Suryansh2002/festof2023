@@ -1,6 +1,6 @@
 # Temperature Alert Agent
 
-**This project was sent for IIT Bombay's Techfest Competition [HackAI](https://techfest.org/competitions/hack-aI) Zonals.**
+**This project was sent for Techfest Competition [HackAI](https://techfest.org/competitions/hack-aI) Zonals.**
 
 ## Project Details
 
@@ -173,19 +173,19 @@ async def send_temperature_request(ctx: Context):
             sends_to=[SendsTo.EMAIL, SendsTo.AGENT],
         ),
     )
-    # if sends_to list contains SendsTo.EMAIL, then passing email is mandatory."""
+    # if sends_to list contains SendsTo.EMAIL, then passing email is mandatory
 
 
 @main_agent.on_message(model=UAgentResponse)
-async def receive_update(ctx: Context, _: str, message: UAgentResponse):
+async def receive_update(ctx: Context, sender: str, message: UAgentResponse):
     if message.type == UAgentResponseType.MESSAGE:
-        ctx.logger.info(str(message.message))
+        ctx.logger.info(f"{sender}: {message.message}")
     elif message.type == UAgentResponseType.ERROR:
-        ctx.logger.error(str(message.message))
+        ctx.logger.error(f"{sender}: {message.message}")
 
 
 @main_agent.on_message(model=TemperatureWarn)
-async def receive_warning(ctx: Context, _: str, message: TemperatureWarn):
+async def receive_warning(ctx: Context, sender: str, message: TemperatureWarn):
     # Client can do anything with the data received
 
     thershold = {
