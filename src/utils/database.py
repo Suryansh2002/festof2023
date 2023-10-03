@@ -13,9 +13,10 @@ from odmantic.engine import AIOEngine
 from odmantic.field import Field
 from odmantic.model import Model
 
+from messages import SendsTo
+
 # odmantic is a ODM (object document mapper) for pymongo,motor
 
-from messages import SendsTo
 
 MONGODB_URL = os.getenv("MONGODB_URL")
 assert MONGODB_URL, "Please set the MONGODB_URL environment variable"

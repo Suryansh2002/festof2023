@@ -11,13 +11,13 @@
 2. Lets users set their preferred temperature range (e.g., a minimum and maximum temperature) and location.
 
 3. Sends an alert/notification to the user when the current temperature in their chosen
-   location goes below the minimum or above the maximum threshold they've set
+   location goes below the minimum or above the maximum threshold they've set.
 
 ## Setting up the Project
 
 ### Step 1. Prerequisites
 
-- Make sure you have python installed in your system by running `python --version` on your terminal
+- Make sure you have python installed in your system by running `python --version` on your terminal.
 
 - Install poetry on your system by running
   ```
@@ -68,7 +68,17 @@
 
 ### Step 5. Setting up the .env file
 
-- Create an account on [OpenWeatherMap](https://openweathermap.org/) and get an Api Key
+- Create an account on [OpenWeatherMap](https://openweathermap.org/) and get an Api Key.
+
+  **_How to get an API key from OpenWeather-_**
+
+  - Visit [OpenWeatherMap](https://openweathermap.org/) and create a new account or Sign-in to your account.
+
+  - Select **My API keys** and generate an API Key
+
+  - Now copy the key.
+
+  - For more queries visit [API documentation ](https://openweathermap.org/api).
 
 - Create a file in the project directory named `.env` and paste the following code in it.
 
